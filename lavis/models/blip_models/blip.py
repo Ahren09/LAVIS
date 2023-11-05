@@ -7,6 +7,8 @@
 
 import logging
 import os
+import os.path as osp
+import platform
 from packaging import version
 
 import torch
@@ -21,11 +23,18 @@ class BlipBase(BaseModel):
     def __init__(self):
         super().__init__()
         transformers_version = version.parse(transformers.__version__)
-        assert transformers_version < version.parse("4.27"), "BLIP models are not compatible with transformers>=4.27, run pip install transformers==4.25 to downgrade"
+        # ssert transformers_version < version.parse("4.27"), "BLIP models are not compatible with
+        # transformers>=4.27, run pip install transformers==4.25 to downgrade"
         
     @classmethod
     def init_tokenizer(cls):
-        tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+        if platform.system() == "Linux" and osp.exists("/home/ahren"):
+            tokenizer = BertTokenizer.from_pretrained("/home/ahren/Workspace/models_hf/bert-base-uncased",
+                                                      use_auth_token=False, local_files_only=True)
+
+        else:
+            tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+
         tokenizer.add_special_tokens({"bos_token": "[DEC]"})
         tokenizer.add_special_tokens({"additional_special_tokens": ["[ENC]"]})
         tokenizer.enc_token_id = tokenizer.additional_special_tokens_ids[0]

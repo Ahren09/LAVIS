@@ -6,6 +6,7 @@
 """
 
 import argparse
+import os
 import random
 
 import numpy as np
@@ -61,6 +62,8 @@ def setup_seeds(config):
 
 
 def main():
+
+    os.makedirs("data", exist_ok=True)
     # allow auto-dl completes on main process without timeout when using NCCL backend.
     # os.environ["NCCL_BLOCKING_WAIT"] = "1"
 

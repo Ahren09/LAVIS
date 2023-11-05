@@ -1,10 +1,14 @@
 import numpy as np
+import torch
 from matplotlib import pyplot as plt
 from scipy.ndimage import filters
 from skimage import transform as skimage_transform
 
 
 def getAttMap(img, attMap, blur=True, overlap=True):
+    if isinstance(attMap, torch.Tensor):
+        attMap = attMap.numpy()
+
     attMap -= attMap.min()
     if attMap.max() > 0:
         attMap /= attMap.max()

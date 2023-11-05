@@ -154,3 +154,6 @@ debug*/
 *.gz
 
 cache/
+*.DS_Store
+.idea
+data/

@@ -32,4 +32,4 @@ datasets:
               - aokvqa/annotations/aokvqa_v1p0_test.json
               - aokvqa/annotations/specialized_vocab_train_lavis.json
       images:
-          storage: coco/images/
+          storage: .

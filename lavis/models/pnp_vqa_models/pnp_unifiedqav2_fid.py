@@ -14,7 +14,8 @@ from lavis.common.registry import registry
 from lavis.models.base_model import BaseModel
 from lavis.common.utils import get_abs_path
 from transformers import T5Config, T5Tokenizer, T5ForConditionalGeneration
-
+import platform
+import os.path as osp
 
 @registry.register_model("pnp_unifiedqav2_fid")
 class PNPUnifiedQAv2FiD(T5ForConditionalGeneration, BaseModel):
@@ -23,8 +24,13 @@ class PNPUnifiedQAv2FiD(T5ForConditionalGeneration, BaseModel):
 
     def __init__(self, config, model_path):
         super().__init__(config)
-        
-        self.tokenizer = T5Tokenizer.from_pretrained(model_path)
+        if platform.system() == "Linux" and osp.exists("/home/ahren"):
+            self.tokenizer = T5Tokenizer.from_pretrained(
+                f"/home/ahren/Workspace/models_hf/{model_path}",
+                                                      use_auth_token=False, local_files_only=True)
+        else:
+
+            self.tokenizer = T5Tokenizer.from_pretrained(model_path)
 
     def forward(self, input_ids=None, attention_mask=None, **kwargs):
         if input_ids != None:
@@ -61,7 +67,18 @@ class PNPUnifiedQAv2FiD(T5ForConditionalGeneration, BaseModel):
         t5_config_path = get_abs_path(cfg.get("t5_config_path"))
         t5_config = T5Config.from_json_file(t5_config_path)
         model = cls(t5_config, model_path)
-        model.load_unifiedqa(T5ForConditionalGeneration.from_pretrained(model_path).state_dict())
+
+        if platform.system() == "Linux" and osp.exists("/home/ahren"):
+            t5 = T5ForConditionalGeneration.from_pretrained(
+                f"/home/ahren/Workspace/models_hf/{model_path}",
+                                                      use_auth_token=False, local_files_only=True)
+
+        else:
+            t5 = T5ForConditionalGeneration.from_pretrained(model_path,
+                                                      use_auth_token=False, local_files_only=True)
+
+
+        model.load_unifiedqa(t5.state_dict())
 
         return model
 

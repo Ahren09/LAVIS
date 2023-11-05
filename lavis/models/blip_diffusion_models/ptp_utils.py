@@ -21,7 +21,6 @@ import numpy as np
 import torch
 from IPython.display import display
 from PIL import Image
-from diffusers.models.cross_attention import CrossAttention
 from typing import Union, Tuple, List, Dict, Optional
 import torch.nn.functional as nnf
 
@@ -534,7 +533,7 @@ class P2PCrossAttnProcessor:
         self.controller = controller
         self.place_in_unet = place_in_unet
 
-    def __call__(self, attn: CrossAttention, hidden_states, encoder_hidden_states=None, attention_mask=None):
+    def __call__(self, attn, hidden_states, encoder_hidden_states=None, attention_mask=None):
         batch_size, sequence_length, _ = hidden_states.shape
         attention_mask = attn.prepare_attention_mask(attention_mask, sequence_length, batch_size=batch_size)
 
